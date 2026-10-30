@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Rusça Seviye Testi</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* Цвета оформления. Свои данные (Instagram, Telegram) меняются в блоке CONFIG ниже */
+:root{
+  --bg:#101014; --card:#1b1b22; --card2:#24242d; --text:#f5f5f7; --muted:#a3a3b0;
+  --accent:#ffd23f; --accent-text:#101014; --ok:#3ddc84; --bad:#ff5c5c; --line:#2e2e38;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:Manrope,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100%}
+body{padding:16px 16px 32px;max-width:520px;margin:0 auto}
+h1{font-size:28px;line-height:1.15;font-weight:800;letter-spacing:-.5px}
+h2{font-size:22px;line-height:1.2;font-weight:800}
+p{line-height:1.5;color:var(--muted)}
+.hl{color:var(--accent)}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--accent);color:var(--accent-text);display:grid;place-items:center;font-weight:800;font-size:18px}
+.brand small{display:block;color:var(--muted);font-size:12px}
+.brand b{font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px}
+.menu-card{display:block;width:100%;text-align:left;cursor:pointer;color:var(--text);font:inherit;transition:transform .1s}
+.menu-card:active{transform:scale(.98)}
+.menu-card .emoji{font-size:28px}
+.menu-card h2{margin:8px 0 4px}
+.tag{display:inline-block;font-size:12px;font-weight:600;background:var(--card2);color:var(--muted);padding:4px 10px;border-radius:999px;margin-top:10px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px;transition:transform .1s,opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn-main{background:var(--accent);color:var(--accent-text)}
+.btn-ghost{background:var(--card2);color:var(--text)}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.progress{height:6px;background:var(--card2);border-radius:99px;overflow:hidden;margin:6px 0 18px}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.instr{font-size:13px;color:var(--muted);margin-bottom:8px}
+.q{font-size:24px;font-weight:800;line-height:1.3;margin-bottom:6px}
+.reading{font-size:14px;color:var(--muted);margin-bottom:4px}
+.opts{display:grid;gap:10px;margin-top:16px}
+.opt{background:var(--card2);border:2px solid transparent;color:var(--text);border-radius:14px;padding:14px 16px;font:inherit;font-size:17px;font-weight:600;text-align:left;cursor:pointer}
+.opt.idk{background:transparent;border:2px dashed var(--line);color:var(--muted);font-size:15px}
+.opt.right{border-color:var(--ok);background:rgba(61,220,132,.12)}
+.opt.wrong{border-color:var(--bad);background:rgba(255,92,92,.12)}
+.opt[disabled]{cursor:default}
+.explain{margin-top:14px;padding:14px;border-radius:14px;background:var(--card2);font-size:15px;line-height:1.5;display:none}
+.explain.show{display:block}
+.explain b{color:var(--text)}
+.result-level{font-size:56px;font-weight:800;color:var(--accent);line-height:1}
+.score{font-size:15px;color:var(--muted);margin-top:6px}
+.note{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.5}
+.cta{background:linear-gradient(135deg,#2a2410,#1b1b22);border:1px solid #4a3f12}
+.cta h2{color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{background:var(--card2);color:var(--text);border:2px solid transparent;border-radius:999px;padding:10px 14px;font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+.chip.on{border-color:var(--accent);color:var(--accent)}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.icon-btn{background:var(--card2);border:0;color:var(--text);width:44px;height:44px;border-radius:12px;font-size:20px;cursor:pointer;flex:none}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-top:14px;cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--accent);width:18px;height:18px}
+.back{background:none;border:0;color:var(--muted);font:inherit;font-size:14px;cursor:pointer;padding:4px 0;margin-bottom:10px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--text);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .3s;max-width:90%;text-align:center;z-index:9}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}
+.review{margin-top:10px;font-size:15px}
+.review div{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.review div:last-child{border:0}
+</style>
+</head>
+<body>
+
+<div class="brand">
+  <div class="logo">Ru</div>
+  <div><b>Katerina</b><small>Türkçe anlatımla Rusça</small></div>
+</div>
+
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   CONFIG: впишите свои данные
+   ========================================================= */
+const CONFIG = {
+  instagram: "rusca.turklere",   // Instagram без @
+  telegram: "",                  // ваш личный Telegram username без @ (например "katerina_ru"). Пусто = кнопка скрыта
+  offer: "İlk tanışma dersi %50 indirimli",
+  offerNote: "Sadece yeni öğrenciler için. Ders 50 dakika, Google Meet üzerinden."
+};
+
+/* ---------- Telegram ---------- */
+const tg = window.Telegram && window.Telegram.WebApp;
+const inTG = !!(tg && tg.initData !== undefined && tg.platform && tg.platform !== "unknown");
+if (tg) {
+  try { tg.ready(); tg.expand(); tg.setHeaderColor("#101014"); tg.setBackgroundColor("#101014"); } catch(e){}
+}
+const haptic = t => { try { tg && tg.HapticFeedback && tg.HapticFeedback.notificationOccurred(t); } catch(e){} };
+function openUrl(url){
+  try{
+    if (inTG && url.startsWith("https://t.me/")) return tg.openTelegramLink(url);
+    if (inTG) return tg.openLink(url);
+  }catch(e){}
+  window.open(url,"_blank");
+}
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3200);
+}
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); return true; }catch(e){
+    try{ const a=document.createElement("textarea"); a.value=text; document.body.appendChild(a); a.select();
+      const ok=document.execCommand("copy"); a.remove(); return ok; }catch(e2){ return false; }
+  }
+}
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- Озвучка ---------- */
+let ruVoice=null;
+function loadVoices(){ try{ const v=speechSynthesis.getVoices(); ruVoice=v.find(x=>x.lang&&x.lang.toLowerCase().startsWith("ru"))||null; }catch(e){} }
+if ("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function speak(text){
+  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="ru-RU"; if(ruVoice)u.voice=ruVoice; u.rate=.85; speechSynthesis.speak(u);}catch(e){}
+}
+const canSpeak = ()=> "speechSynthesis" in window;
+
+/* =========================================================
+   ТЕСТ УРОВНЯ
+   ========================================================= */
+const TEST = [
+  {i:"Bu ne demek? Türkçe anlamını seç.", q:"Как тебя зовут?", o:["Adın ne?","Nerelisin?","Kaç yaşındasın?","Nasılsın?"], a:0,
+   e:"<b>Как тебя зовут?</b> = Adın ne? Kelime kelime: Sana nasıl hitap ediyorlar?"},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"Это ___ книга.", o:["моя","мой","моё","мои"], a:0,
+   e:"<b>книга</b> (kitap) dişil bir kelime. Bu yüzden <b>моя</b> kullanılır."},
+  {i:"Bu ne demek? Türkçe anlamını seç.", q:"Спасибо, всё хорошо!", o:["Teşekkürler, her şey yolunda!","Merhaba, nasılsın?","Afedersiniz, anlamadım","Görüşürüz, iyi günler!"], a:0,
+   e:"<b>Спасибо</b> = teşekkürler, <b>всё хорошо</b> = her şey yolunda."},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"Вчера я ___ в кино.", o:["ходил(а)","хожу","пойду","ходить"], a:0,
+   e:"<b>Вчера</b> = dün. Geçmiş zaman gerekiyor: <b>ходил</b> (erkek), <b>ходила</b> (kadın)."},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"У меня нет ___.", o:["машины","машина","машину","машиной"], a:0,
+   e:"<b>нет</b> (yok) kelimesinden sonra isim -ın haline girer: машина → <b>машины</b>."},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"Я живу в ___.", o:["Москве","Москва","Москву","Москвой"], a:0,
+   e:"Nerede? sorusunda <b>в</b> + -de hali: Москва → <b>в Москве</b>."},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"Если бы у меня было время, я ___ в Россию.", o:["поехал бы","поеду","еду","поехал"], a:0,
+   e:"<b>Если бы</b> ile şart cümlesi kurulur: <b>поехал бы</b> = giderdim."},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"Мне нужно ___ документы до пятницы.", o:["подготовить","готовлю","подготовил","готовила"], a:0,
+   e:"Cuma gününe kadar bitirilecek tek bir iş. Mükemmel görünüş kullanılır: <b>подготовить</b>."},
+  {i:"Cümleyi oku. Neden geç kaldı? Türkçe cevabı seç.", q:"Он опоздал, потому что попал в пробку.", o:["Trafiğe takıldı","Uyuyakaldı","Hastalandı","Otobüsü kaçırdı"], a:0,
+   e:"<b>попасть в пробку</b> = trafiğe takılmak. Günlük konuşmada çok sık kullanılır."},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"Несмотря на ___, мы продолжили работу.", o:["трудности","трудностей","трудностям","трудностями"], a:0,
+   e:"<b>несмотря на</b> (rağmen) kelimesinden sonra -i hali gelir: <b>трудности</b>."},
+  {i:"Deyimin anlamını seç.", q:"Он работает спустя рукава.", o:["Özensiz çalışıyor","Çok hızlı çalışıyor","Evden çalışıyor","Fazla mesai yapıyor"], a:0,
+   e:"<b>спустя рукава</b> = özensiz, isteksizce. İş ortamında sık duyacağın bir deyim."},
+  {i:"Boşluğa doğru kelimeyi seç.", q:"Документы, ___ вы прислали, уже проверены.", o:["которые","который","которых","которым"], a:0,
+   e:"<b>документы</b> çoğul ve yan cümlede özne konumunda: <b>которые</b>."}
+];
+
+const LEVELS = [
+  {max:2,  code:"A0", name:"Sıfırdan başlıyorsun",
+   text:"İlk adımın alfabe. Benim programımda alfabeyi en fazla 2 derste geçiyoruz. Türkçeye benzeyen kelimelerle başlıyoruz: автобус, банк, лампа."},
+  {max:5,  code:"A1", name:"Temel seviye",
+   text:"Basit kelimeleri ve kalıpları tanıyorsun. Sıradaki adım hal ekleri ve kısa günlük diyaloglar."},
+  {max:8,  code:"A2", name:"Temel üstü",
+   text:"Geçmiş zamanı ve temel hal eklerini biliyorsun. Şimdi cümleleri hızlı kurmaya ve konuşmaya geçme zamanı."},
+  {max:10, code:"B1", name:"Orta seviye",
+   text:"Anlıyorsun ve cümle kuruyorsun. Seni ileri taşıyacak olan akıcılık: düşünmeden konuşma pratiği."},
+  {max:12, code:"B2", name:"İleri seviye",
+   text:"Dilbilgin güçlü. Gelişim alanın iş Rusçası, deyimler ve doğal konuşma tarzı."}
+];
+
+let tState = null;
+
+function renderHome(){
+  app.innerHTML = `
+    <h1>Rusçanı <span class="hl">test et</span> ve kelime çalış</h1>
+    <p style="margin-top:8px">Ücretsiz. Kayıt yok. Sonucu hemen görürsün.</p>
+    <button class="card menu-card" onclick="startTest()">
+      <div class="emoji">🎯</div>
+      <h2>Rusça seviyen ne?</h2>
+      <p>12 kısa soru. Sonunda seviyeni ve sana uygun ilk adımı görürsün.</p>
+      <span class="tag">⏱ ~3 dakika</span>
+    </button>
+    <button class="card menu-card" onclick="renderWordsHome()">
+      <div class="emoji">🧠</div>
+      <h2>Kelime antrenörü</h2>
+      <p>Günlük hayat, seyahat ve iş kelimeleri. Sesli dinle, okunuşunu gör.</p>
+      <span class="tag">⏱ ~2 dakika</span>
+    </button>`;
+  window.scrollTo(0,0);
+}
+
+function startTest(){
+  tState = {idx:0, score:0, answered:false, order:TEST.map(q=>({...q, opts:shuffle(q.o.map((t,k)=>({t,ok:k===q.a})))}))};
+  renderTestIntro();
+}
+
+function renderTestIntro(){
+  app.innerHTML = `
+    <button class="back" onclick="renderHome()">← Geri</button>
+    <h1>Rusça seviye testi</h1>
+    <div class="card">
+      <p>📝 <b style="color:var(--text)">12 soru</b>, kolaydan zora doğru.</p>
+      <p style="margin-top:8px">🇹🇷 Sorular Türkçe açıklanıyor. Bazı cevaplar Rusça, bazıları Türkçe. Her sorunun üstünde yazıyor.</p>
+      <p style="margin-top:8px">⏱ Süre sınırı yok. Ortalama 3 dakika.</p>
+      <p style="margin-top:8px">🤷 Bilmiyorsan <b style="color:var(--text)">Bilmiyorum</b> seç. Böylece sonuç daha doğru çıkar.</p>
+    </div>
+    <button class="btn btn-main" onclick="renderQuestion()">Teste başla</button>`;
+  window.scrollTo(0,0);
+}
+
+function renderQuestion(){
+  const s=tState, q=s.order[s.idx];
+  s.answered=false;
+  app.innerHTML = `
+    <div class="meta"><span>Soru ${s.idx+1} / ${s.order.length}</span><button class="back" style="margin:0" onclick="renderHome()">Çıkış</button></div>
+    <div class="progress"><i style="width:${(s.idx)/s.order.length*100}%"></i></div>
+    <div class="instr">${esc(q.i)}</div>
+    <div class="q">${esc(q.q)}</div>
+    <div class="opts">
+      ${q.opts.map((o,k)=>`<button class="opt" data-k="${k}" onclick="answer(${k})">${esc(o.t)}</button>`).join("")}
+      <button class="opt idk" onclick="answer(-1)">Bilmiyorum</button>
+    </div>
+    <div class="explain" id="explain">${q.e}</div>
+    <button class="btn btn-main hidden" id="next" onclick="nextQ()">${s.idx+1<s.order.length?"Sonraki soru":"Sonucu gör"}</button>`;
+  window.scrollTo(0,0);
+}
+
+function answer(k){
+  const s=tState; if(s.answered) return; s.answered=true;
+  const q=s.order[s.idx];
+  const btns=[...document.querySelectorAll(".opt")];
+  btns.forEach(b=>b.disabled=true);
+  q.opts.forEach((o,i)=>{ if(o.ok) btns[i].classList.add("right"); });
+  if(k>=0 && q.opts[k].ok){ s.score++; haptic("success"); }
+  else { if(k>=0) btns[k].classList.add("wrong"); haptic("error"); }
+  document.getElementById("explain").classList.add("show");
+  document.getElementById("next").classList.remove("hidden");
+}
+
+function nextQ(){ tState.idx++; tState.idx<tState.order.length ? renderQuestion() : renderTestResult(); }
+
+function renderTestResult(){
+  const sc=tState.score, L=LEVELS.find(l=>sc<=l.max);
+  const msg=`Merhaba Katerina! Seviye testinde ${L.code} çıktı (${sc}/12). Tanışma dersi hakkında bilgi almak istiyorum.`;
+  app.innerHTML = `
+    <div class="progress"><i style="width:100%"></i></div>
+    <p>Yaklaşık seviyen</p>
+    <div class="result-level">${L.code}</div>
+    <h2 style="margin-top:8px">${L.name}</h2>
+    <div class="score">Doğru cevap: ${sc} / 12</div>
+    <div class="card"><p style="color:var(--text)">${L.text}</p></div>
+    ${ctaBlock(msg)}
+    <button class="btn btn-ghost" onclick="renderWordsHome()">🧠 Kelime antrenörüne geç</button>
+    <button class="btn btn-ghost" onclick="startTest()">Testi tekrar çöz</button>
+    <p class="note">Bu kısa test yaklaşık bir sonuç verir. Tam seviyeni tanışma dersinde birlikte belirleriz.</p>`;
+  window.scrollTo(0,0);
+}
+
+/* =========================================================
+   CTA (переход в DM)
+   ========================================================= */
+let ctaMsg="";
+function ctaBlock(msg){
+  ctaMsg=msg;
+  return `
+    <div class="card cta">
+      <h2>${esc(CONFIG.offer)}</h2>
+      <p style="margin-top:6px">Seviyeni birlikte netleştirelim ve sana uygun planı çıkaralım. ${esc(CONFIG.offerNote)}</p>
+      ${CONFIG.telegram?`<button class="btn btn-main" onclick="dm('tg')">✈️ Telegram'dan yaz</button>`:""}
+      ${CONFIG.instagram?`<button class="btn ${CONFIG.telegram?"btn-ghost":"btn-main"}" onclick="dm('ig')">📩 Instagram DM'den yaz</button>`:""}
+    </div>`;
+}
+async function dm(where){
+  if(where==="tg"){
+    openUrl(`https://t.me/${CONFIG.telegram}?text=${encodeURIComponent(ctaMsg)}`);
+  } else {
+    const ok=await copy(ctaMsg);
+    toast(ok?"Mesaj kopyalandı. DM'e yapıştırıp gönder 👍":"Instagram açılıyor. Sonucunu yazman yeterli 👍");
+    setTimeout(()=>openUrl(`https://ig.me/m/${CONFIG.instagram}`),700);
+  }
+}
+
+/* =========================================================
+   ТРЕНАЖЁР СЛОВ
+   ========================================================= */
+const WORDS = {
+  "Günlük hayat":[
+    ["привет","privyet","merhaba"],["спасибо","spasiba","teşekkürler"],["хорошо","haraşo","iyi"],
+    ["вода","vada","su"],["хлеб","hlep","ekmek"],["дом","dom","ev"],["друг","druk","arkadaş"],
+    ["сегодня","sivodnya","bugün"],["завтра","zavtra","yarın"],["деньги","dyengi","para"],
+    ["магазин","magazin","mağaza"],["работа","rabota","iş"]
+  ],
+  "Seyahat":[
+    ["аэропорт","aeraport","havalimanı"],["билет","bilyet","bilet"],["гостиница","gastinitsa","otel"],
+    ["такси","taksi","taksi"],["вокзал","vakzal","tren garı"],["паспорт","paspart","pasaport"],
+    ["направо","naprava","sağa"],["налево","nalyeva","sola"],["Сколько стоит?","skolka stoit","Ne kadar?"],
+    ["улица","ulitsa","sokak"],["остановка","astanovka","durak"],["багаж","bagaj","bagaj"]
+  ],
+  "İş":[
+    ["встреча","fstryeça","toplantı"],["договор","dagavor","sözleşme"],["цена","tsena","fiyat"],
+    ["скидка","skidka","indirim"],["доставка","dastavka","teslimat"],["заказ","zakas","sipariş"],
+    ["оплата","aplata","ödeme"],["компания","kampaniya","şirket"],["коллега","kalyega","iş arkadaşı"],
+    ["звонок","zvanok","telefon görüşmesi"],["срок","srok","süre, son tarih"],["клиент","kliyent","müşteri"]
+  ]
+};
+const ROUND=10;
+let wState=null, showReading=true;
+
+function renderWordsHome(){
+  const cats=Object.keys(WORDS);
+  if(!wState) wState={cat:cats[0]};
+  app.innerHTML = `
+    <button class="back" onclick="renderHome()">← Geri</button>
+    <h1>Kelime antrenörü</h1>
+    <div class="card">
+      <p>Rusça kelimeyi gör, Türkçe anlamını seç.</p>
+      <p style="margin-top:8px">🔊 Butona bas, telaffuzu dinle. 🔤 Okunuşu Latin harfleriyle görebilirsin.</p>
+      <p style="margin-top:8px">⏱ ${ROUND} kelime, süre sınırı yok.</p>
+    </div>
+    <p style="margin-top:18px;color:var(--text);font-weight:600">Konu seç</p>
+    <div class="chips">${cats.map(c=>`<button class="chip ${c===wState.cat?"on":""}" onclick="wState.cat='${c}';renderWordsHome()">${c}</button>`).join("")}</div>
+    <label class="toggle"><input type="checkbox" ${showReading?"checked":""} onchange="showReading=this.checked"> Okunuşu göster</label>
+    <button class="btn btn-main" onclick="startWords()">Başla</button>`;
+  window.scrollTo(0,0);
+}
+
+function startWords(){
+  const pool=WORDS[wState.cat];
+  wState={cat:wState.cat, idx:0, score:0, answered:false, missed:[], list:shuffle(pool).slice(0,ROUND)};
+  renderWord();
+}
+
+function renderWord(){
+  const s=wState, w=s.list[s.idx], pool=WORDS[s.cat];
+  const wrong=shuffle(pool.filter(x=>x[2]!==w[2])).slice(0,3).map(x=>({t:x[2],ok:false}));
+  s.opts=shuffle([{t:w[2],ok:true},...wrong]); s.answered=false;
+  app.innerHTML = `
+    <div class="meta"><span>${esc(s.cat)} · ${s.idx+1} / ${s.list.length}</span><button class="back" style="margin:0" onclick="renderWordsHome()">Çıkış</button></div>
+    <div class="progress"><i style="width:${s.idx/s.list.length*100}%"></i></div>
+    <div class="instr">Bu kelimenin Türkçe anlamını seç.</div>
+    <div class="row">
+      <div>
+        <div class="q" style="font-size:32px">${esc(w[0])}</div>
+        ${showReading?`<div class="reading">🔤 ${esc(w[1])}</div>`:""}
+      </div>
+      ${canSpeak()?`<button class="icon-btn" onclick="speak('${w[0].replace(/'/g,"")}')" aria-label="Dinle">🔊</button>`:""}
+    </div>
+    <div class="opts">${s.opts.map((o,k)=>`<button class="opt" onclick="wAnswer(${k})">${esc(o.t)}</button>`).join("")}</div>
+    <button class="btn btn-main hidden" id="next" onclick="wNext()">${s.idx+1<s.list.length?"Sonraki":"Sonucu gör"}</button>`;
+  window.scrollTo(0,0);
+}
+
+function wAnswer(k){
+  const s=wState; if(s.answered) return; s.answered=true;
+  const btns=[...document.querySelectorAll(".opt")]; btns.forEach(b=>b.disabled=true);
+  s.opts.forEach((o,i)=>{ if(o.ok) btns[i].classList.add("right"); });
+  if(s.opts[k].ok){ s.score++; haptic("success"); }
+  else { btns[k].classList.add("wrong"); s.missed.push(s.list[s.idx]); haptic("error"); }
+  if(canSpeak()) speak(s.list[s.idx][0]);
+  document.getElementById("next").classList.remove("hidden");
+}
+
+function wNext(){ wState.idx++; wState.idx<wState.list.length ? renderWord() : renderWordsResult(); }
+
+function renderWordsResult(){
+  const s=wState, n=s.list.length;
+  const head = s.score===n ? "Harika, hepsi doğru! 🔥" : s.score>=n*0.7 ? "Çok iyi gidiyorsun 💪" : "İyi bir başlangıç 🌱";
+  const msg=`Merhaba Katerina! Kelime antrenöründe "${s.cat}" konusunda ${s.score}/${n} yaptım. Tanışma dersi hakkında bilgi almak istiyorum.`;
+  app.innerHTML = `
+    <div class="progress"><i style="width:100%"></i></div>
+    <p>${esc(s.cat)}</p>
+    <div class="result-level">${s.score}/${n}</div>
+    <h2 style="margin-top:8px">${head}</h2>
+    ${s.missed.length?`
+      <div class="card">
+        <p style="color:var(--text);font-weight:600">Tekrar etmen gereken kelimeler</p>
+        <div class="review">${s.missed.map(w=>`<div><span>${esc(w[0])} <span style="color:var(--muted)">· ${esc(w[1])}</span></span><b class="hl">${esc(w[2])}</b></div>`).join("")}</div>
+      </div>`:""}
+    <div class="card"><p style="color:var(--text)">Kelimeyi bilmek ilk adım. Derslerde kelimeleri çağrışımlarla hafızana yerleştiriyoruz ve hemen konuşmada kullanıyoruz.</p></div>
+    ${ctaBlock(msg)}
+    <button class="btn btn-ghost" onclick="startWords()">Aynı konuyu tekrar et</button>
+    <button class="btn btn-ghost" onclick="renderWordsHome()">Başka konu seç</button>
+    <button class="btn btn-ghost" onclick="startTest()">🎯 Seviye testini çöz</button>`;
+  window.scrollTo(0,0);
+}
+
+/* ---------- Старт: ?startapp=test / words или #test / #words ---------- */
+(function boot(){
+  let p="";
+  try{ p=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param)||""; }catch(e){}
+  if(!p) p=(new URLSearchParams(location.search).get("start")||location.hash.replace("#",""));
+  if(p==="test") return startTest();
+  if(p==="words") return renderWordsHome();
+  renderHome();
+})();
+</script>
+</body>
+</html>
